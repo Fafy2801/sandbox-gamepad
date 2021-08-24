@@ -227,6 +227,26 @@ partial class SandboxPlayer : Player
 		}
 	}
 
+	[ServerCmd( "inventorynext" )]
+	public static void InventoryNextCMD()
+	{
+		var target = ConsoleSystem.Caller.Pawn;
+		if ( target == null )
+			return;
+
+		target.Inventory?.SwitchActiveSlot( 1, true );
+	}
+
+	[ServerCmd( "inventoryprev" )]
+	public static void InventoryPrevCMD()
+	{
+		var target = ConsoleSystem.Caller.Pawn;
+		if ( target == null )
+			return;
+
+		target.Inventory?.SwitchActiveSlot( -1, true );
+	}
+
 	// TODO
 
 	//public override bool HasPermission( string mode )
