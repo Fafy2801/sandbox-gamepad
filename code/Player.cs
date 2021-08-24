@@ -22,7 +22,7 @@ partial class SandboxPlayer : Player
 
 	public override void Spawn()
 	{
-		MainCamera = new FirstPersonCamera();
+		MainCamera = new FirstPersonAimController();
 		LastCamera = MainCamera;
 
 		base.Spawn();
@@ -155,13 +155,13 @@ partial class SandboxPlayer : Player
 
 		if ( Input.Pressed( InputButton.View ) )
 		{
-			if ( MainCamera is not FirstPersonCamera )
+			if ( MainCamera is not FirstPersonAimController )
 			{
-				MainCamera = new FirstPersonCamera();
+				MainCamera = new FirstPersonAimController();
 			}
 			else
 			{
-				MainCamera = new ThirdPersonCamera();
+				MainCamera = new ThirdPersonAimController();
 			}
 		}
 
