@@ -42,6 +42,7 @@ public class MoveController : WalkController
 		MovedForward = deltaV > 0;
 		MovedBack = deltaV < 0;
 
+		// And this is so we don't move in the world
 		bool menu = input.Down( InputButton.Menu );
 		input.Clear();
 		input.SetButton( InputButton.Menu, menu );

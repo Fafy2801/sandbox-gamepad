@@ -42,6 +42,9 @@ public partial class SpawnList : Panel
 
 			Canvas.AddItem( file.Remove( file.Length - 6 ) );
 		}
+
+		if (Grid.Count > 0)
+			Select( 0 );
 	}
 
 	public void Select( int select )
@@ -57,20 +60,30 @@ public partial class SpawnList : Panel
 
 	public void SwitchHorizontal( bool right )
 	{
-		if ( right && Selected >= Grid.Count - 1 )
-			Select( 0 );
-		else if ( !right && Selected <= 0 )
-			Select( Grid.Count - 1 );
-		else
-			Select( Selected + (right ? 1 : -1) );
+		int rows = MathX.FloorToInt( Canvas.Box.Rect.Size.x / (Grid[0].Box.Rect.Size.x + 5) );
+		int select = Selected + (right ? 1 : -1);
+
+		if ( select < 0 || select >= Grid.Count || (right && select % rows == 0) || (!right && select % rows == rows - 1) )
+		{
+			if ( right )
+			{
+				if ( select == Grid.Count )
+					select = Math.Max( Selected - rows + 1 + (rows - select % rows), 0 );
+				else
+					select = Math.Max( Selected - rows + 1, 0 );
+			}
+			else if ( Selected % rows == 0 )
+				select = Math.Min( select + rows, Grid.Count - 1 );
+		}
+
+		Select( select );
 	}
 
 	public void SwitchVertical( bool down )
 	{
-		// How many rows we have
-		var rows = MathX.FloorToInt( Canvas.Box.Rect.Size.x / Canvas.Layout.ItemSize.x );
-		var columns = MathX.FloorToInt( Canvas.Box.Rect.Size.y / Canvas.Layout.ItemSize.y );
-		var select = Selected + rows * (down ? 1 : -1);
+		int rows = MathX.FloorToInt( Canvas.Box.Rect.Size.x / (Grid[0].Box.Rect.Size.x + 5) );
+		int columns = MathX.FloorToInt( Canvas.Box.Rect.Size.y / (Grid[0].Box.Rect.Size.y + 5) );
+		int select = Selected + rows * (down ? 1 : -1);
 
 		if ( select >= Grid.Count || select < 0 )
 			if ( down )
