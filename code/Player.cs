@@ -235,24 +235,83 @@ partial class SandboxPlayer : Player
 		}
 	}
 
-	[ServerCmd( "inventorynext" )]
+	[ServerCmd( "inventorynext_sv" )]
 	public static void InventoryNextCMD()
 	{
-		var target = ConsoleSystem.Caller.Pawn;
+		var target = ConsoleSystem.Caller.Pawn as SandboxPlayer;
 		if ( target == null )
 			return;
 
 		target.Inventory?.SwitchActiveSlot( 1, true );
 	}
 
-	[ServerCmd( "inventoryprev" )]
+	[ClientCmd( "inventorynext" )]
+	public static void SpawnMenuNextPredicted()
+	{
+		var target = Local.Pawn as SandboxPlayer;
+		if ( target == null )
+			return;
+
+		if ( !target.SpawnMenuOpened )
+			ConsoleSystem.Run( "inventorynext_sv" );
+		else
+		{
+			if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Props )
+			{
+				SpawnMenu.Instance.Spawns.SetClass( "active", false );
+				SpawnMenu.Instance.Tabs[0].SetClass( "active", false );
+				SpawnMenu.Instance.Entities.SetClass( "active", true );
+				SpawnMenu.Instance.Tabs[1].SetClass( "active", true );
+				SpawnMenu.ActiveSection = SpawnMenu.MenuSection.Entities;
+				SpawnMenu.Instance.Tabs[2].SetClass( "active", false );
+			} else if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Entities )
+			{
+				SpawnMenu.Instance.Tabs[0].SetClass( "active", false );
+				SpawnMenu.Instance.Tabs[1].SetClass( "active", false );
+				SpawnMenu.ActiveSection = SpawnMenu.MenuSection.Tools;
+				SpawnMenu.Instance.Tabs[2].SetClass( "active", true );
+			}
+		}
+			
+	}
+
+	[ServerCmd( "inventoryprev_sv" )]
 	public static void InventoryPrevCMD()
 	{
-		var target = ConsoleSystem.Caller.Pawn;
+		var target = ConsoleSystem.Caller.Pawn as SandboxPlayer;
 		if ( target == null )
 			return;
 
 		target.Inventory?.SwitchActiveSlot( -1, true );
+	}
+
+	[ClientCmd( "inventoryprev" )]
+	public static void SpawnMenuPrevPredicted()
+	{
+		var target = Local.Pawn as SandboxPlayer;
+		if ( target == null )
+			return;
+
+		if ( !target.SpawnMenuOpened )
+			ConsoleSystem.Run( "inventoryprev_sv" );
+		else
+		{
+			if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Entities )
+			{
+				SpawnMenu.Instance.Spawns.SetClass( "active", true );
+				SpawnMenu.Instance.Tabs[0].SetClass( "active", true );
+				SpawnMenu.Instance.Entities.SetClass( "active", false );
+				SpawnMenu.Instance.Tabs[1].SetClass( "active", false );
+				SpawnMenu.ActiveSection = SpawnMenu.MenuSection.Props;
+			} else if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Tools )
+			{
+				SpawnMenu.Instance.Tabs[0].SetClass( "active", false );
+				SpawnMenu.Instance.Tabs[1].SetClass( "active", true );
+				SpawnMenu.ActiveSection = SpawnMenu.MenuSection.Entities;
+				SpawnMenu.Instance.Tabs[2].SetClass( "active", false );
+			}
+		}
+
 	}
 
 	// TODO

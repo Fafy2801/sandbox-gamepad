@@ -40,8 +40,6 @@
                 transform: scale( 1 );
                 opacity: 1;
                 color: #fff;
-                //	background-color: #fff;//( #3273eb, 0.2 );
-                //color: #3273eb;
             }
         }
     }
@@ -165,7 +163,7 @@
                 pointer-events: none;
             }
 
-            &:hover, &.active {
+            &.active {
                 color: #fff;
                 background-color: rgba(black, 0.4);
                 border-radius: 5px;
