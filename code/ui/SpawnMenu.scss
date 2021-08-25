@@ -93,7 +93,7 @@
                     }
 
                     &.active {
-                        //border-left: 5px solid #3273eb;
+                        border-left: 5px solid #3273eb;
                         color: white;
                     }
                 }
@@ -165,12 +165,11 @@
                 pointer-events: none;
             }
 
-            &:hover {
+            &:hover, &.active {
                 color: #fff;
                 background-color: rgba(black, 0.4);
-            }
-
-            &:active {
+                border-radius: 5px;
+                border: 3px solid #3273eb;
             }
         }
     }

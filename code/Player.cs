@@ -13,6 +13,8 @@ partial class SandboxPlayer : Player
 	[Net, Predicted] public Entity Vehicle { get; set; }
 	[Net, Predicted] public ICamera MainCamera { get; set; }
 
+	public bool SpawnMenuOpened { get; set; } = false;
+
 	public ICamera LastCamera { get; set; }
 
 	public SandboxPlayer()
@@ -32,7 +34,7 @@ partial class SandboxPlayer : Player
 	{
 		SetModel( "models/citizen/citizen.vmdl" );
 
-		Controller = new WalkController();
+		Controller = new MoveController();
 		Animator = new StandardPlayerAnimator();
 
 		MainCamera = LastCamera;
@@ -192,6 +194,12 @@ partial class SandboxPlayer : Player
 		if ( Input.Left != 0 || Input.Forward != 0 )
 		{
 			timeSinceJumpReleased = 1;
+		}
+
+		if ( Input.Pressed( InputButton.Menu ) )
+		{
+			SpawnMenuOpened = !SpawnMenuOpened;
+			SpawnMenu.Instance?.Parent.SetClass( "spawnmenuopen", SpawnMenuOpened );
 		}
 	}
 

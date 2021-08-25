@@ -1,14 +1,21 @@
 ﻿using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Tests;
+using System;
+using System.Collections.Generic;
 
 [Library]
 public partial class SpawnList : Panel
 {
-	VirtualScrollPanel Canvas;
+	public VirtualScrollPanel Canvas;
+
+	public int Selected { get; set; } = 0;
+
+	public List<Panel> Grid { get; set; }
 
 	public SpawnList()
 	{
+		Grid = new List<Panel>();
 		AddClass( "spawnpage" );
 		AddChild( out Canvas, "canvas" );
 
@@ -23,6 +30,8 @@ public partial class SpawnList : Panel
 			{
 				Texture = Texture.Load( $"/models/{file}_c.png", false )
 			};
+
+			Grid.Add( panel );
 		};
 
 		foreach ( var file in FileSystem.Mounted.FindFile( "models", "*.vmdl_c.png", true ) )
@@ -33,5 +42,47 @@ public partial class SpawnList : Panel
 
 			Canvas.AddItem( file.Remove( file.Length - 6 ) );
 		}
+	}
+
+	public void Select( int select )
+	{
+		for (int i=0; i < Grid.Count; i++ )
+		{
+			Panel panel = Grid[i];
+
+			panel.SetClass( "active", i == select );
+			Selected = select;
+		}
+	}
+
+	public void SwitchHorizontal( bool right )
+	{
+		if ( right && Selected >= Grid.Count - 1 )
+			Select( 0 );
+		else if ( !right && Selected <= 0 )
+			Select( Grid.Count - 1 );
+		else
+			Select( Selected + (right ? 1 : -1) );
+	}
+
+	public void SwitchVertical( bool down )
+	{
+		// How many rows we have
+		var rows = MathX.FloorToInt( Canvas.Box.Rect.Size.x / Canvas.Layout.ItemSize.x );
+		var columns = MathX.FloorToInt( Canvas.Box.Rect.Size.y / Canvas.Layout.ItemSize.y );
+		var select = Selected + rows * (down ? 1 : -1);
+
+		if ( select >= Grid.Count || select < 0 )
+			if ( down )
+				select = Selected % rows;
+			else
+			{
+				select = rows * columns - (rows - Selected);
+
+				while ( select >= Grid.Count && Grid.Count > 0 )
+					select = Math.Max( select - rows, 0 );
+			}
+
+		Select( select );
 	}
 }

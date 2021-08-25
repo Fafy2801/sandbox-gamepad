@@ -12,6 +12,11 @@ public partial class SpawnMenu : Panel
 	public static SpawnMenu Instance;
 	readonly Panel toollist;
 
+	public static int Hovered { get; set; } = 0;
+
+	public SpawnList Spawns { get; private set; }
+	public EntityList Entities { get; private set; }
+
 	public SpawnMenu()
 	{
 		Instance = this;
@@ -26,11 +31,11 @@ public partial class SpawnMenu : Panel
 			var body = left.Add.Panel( "body" );
 
 			{
-				var props = body.AddChild<SpawnList>();
-				tabs.SelectedButton = tabs.AddButtonActive( "Props", ( b ) => props.SetClass( "active", b ) );
+				Spawns = body.AddChild<SpawnList>();
+				tabs.SelectedButton = tabs.AddButtonActive( "Props", ( b ) => Spawns.SetClass( "active", b ) );
 
-				var ents = body.AddChild<EntityList>();
-				tabs.AddButtonActive( "Entities", ( b ) => ents.SetClass( "active", b ) );
+				Entities = body.AddChild<EntityList>();
+				tabs.AddButtonActive( "Entities", ( b ) => Entities.SetClass( "active", b ) );
 			}
 		}
 
@@ -80,7 +85,7 @@ public partial class SpawnMenu : Panel
 	{
 		base.Tick();
 
-		Parent.SetClass( "spawnmenuopen", Input.Down( InputButton.Menu ) );
+		//Parent.SetClass( "spawnmenuopen", Input.Down( InputButton.Menu ) );
 	}
 
 	public override void OnHotloaded()
