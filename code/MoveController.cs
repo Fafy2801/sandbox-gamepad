@@ -27,33 +27,39 @@ public class MoveController : WalkController
 		int deltaH = MathX.FloorToInt( input.AnalogMove.y + 0.5f );
 
 		var instance = SpawnMenu.Instance;
-		if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Props )
-			MoveGrid( instance.Spawns, deltaH, deltaV );
-		else if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Entities )
-			MoveGrid( instance.Entities, deltaH, deltaV );
-		else if (SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Tools )
-			if (deltaV > 0 && !MovedForward)
-				instance.ToolSelect( Math.Clamp(instance.ToolSelected - 1, 0, instance.ToolButtons.Count - 1));
-			else if( deltaV < 0 && !MovedBack )
-				instance.ToolSelect( Math.Clamp(instance.ToolSelected + 1, 0, instance.ToolButtons.Count - 1));
+		switch( SpawnMenu.ActiveSection ){
+			case SpawnMenu.MenuSection.Props:
+				MoveGrid( instance.Spawns, deltaH, deltaV );
+				break;
+			case SpawnMenu.MenuSection.Entities:
+				MoveGrid( instance.Entities, deltaH, deltaV );
+				break;
+			case SpawnMenu.MenuSection.Tools:
+				if ( deltaV > 0 && !MovedForward )
+					instance.ToolSelect( Math.Clamp( instance.ToolSelected - 1, 0, instance.ToolButtons.Count - 1 ) );
+				else if ( deltaV < 0 && !MovedBack )
+					instance.ToolSelect( Math.Clamp( instance.ToolSelected + 1, 0, instance.ToolButtons.Count - 1 ) );
+				break;
+		}
 
 		if ( input.Pressed( InputButton.Jump ))
-			// TODO: replace with switch
-			if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Props )
+			switch ( SpawnMenu.ActiveSection )
 			{
-				var mdl = instance.Spawns.PanelData[instance.Spawns.Selected];
-				if ( mdl != null )
-					ConsoleSystem.Run( "spawn", "models/" + mdl );
-			}
-			else if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Entities )
-			{
-				var ent = instance.Entities.PanelData[instance.Entities.Selected];
-				if ( ent != null )
-					ConsoleSystem.Run( "spawn_entity", ent );
-			}
-			else if ( SpawnMenu.ActiveSection == SpawnMenu.MenuSection.Tools )
-				ConsoleSystem.Run( "inventory_current", "weapon_tool" );
+				case SpawnMenu.MenuSection.Props:
+					var mdl = instance.Spawns.PanelData[instance.Spawns.Selected];
+					if ( mdl != null )
+						ConsoleSystem.Run( "spawn", "models/" + mdl );
+					break;
+				case SpawnMenu.MenuSection.Entities:
+					var ent = instance.Entities.PanelData[instance.Entities.Selected];
+					if ( ent != null )
+						ConsoleSystem.Run( "spawn_entity", ent );
+					break;
+				case SpawnMenu.MenuSection.Tools:
+					ConsoleSystem.Run( "inventory_current", "weapon_tool" );
+					break;
 
+			}
 
 		// This prevents infinite movement
 		MovedLeft = deltaH > 0;
