@@ -29,6 +29,7 @@ public partial class SpawnMenu : Panel
 
 		StyleSheet.Load( "/ui/SpawnMenu.scss" );
 
+		var controls = Add.Label( "inventoryprev and inventorynext to switch tabs. Left joystick/WASD to navigate menu. Jump to simulate click.", "controls" );
 		var left = Add.Panel( "left" );
 		{
 			var tabs = left.AddChild<ButtonGroup>();
