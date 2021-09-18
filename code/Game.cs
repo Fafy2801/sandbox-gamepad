@@ -15,7 +15,7 @@ partial class SandboxGame : Game
 	public override void ClientJoined( Client cl )
 	{
 		base.ClientJoined( cl );
-		var player = new SandboxPlayer();
+		var player = new SandboxPlayer( cl );
 		player.Respawn();
 
 		cl.Pawn = player;
@@ -93,5 +93,11 @@ partial class SandboxGame : Game
 				basePlayer.DevController = new NoclipController();
 			}
 		}
+	}
+
+	[ClientCmd( "debug_write" )]
+	public static void Write()
+	{
+		ConsoleSystem.Run( "quit" );
 	}
 }
